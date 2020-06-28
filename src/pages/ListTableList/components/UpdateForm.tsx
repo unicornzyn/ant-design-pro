@@ -33,7 +33,7 @@ const formLayout = {
   wrapperCol: { span: 13 },
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = props => {
+const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<FormValueType>({
     name: props.values.name,
     desc: props.values.desc,
@@ -68,7 +68,7 @@ const UpdateForm: React.FC<UpdateFormProps> = props => {
     if (currentStep < 2) {
       forward();
     } else {
-      handleUpdate(formVals);
+      handleUpdate({ ...formVals, ...fieldsValue });
     }
   };
 
@@ -186,8 +186,7 @@ const UpdateForm: React.FC<UpdateFormProps> = props => {
       title="规则配置"
       visible={updateModalVisible}
       footer={renderFooter()}
-      onCancel={() => handleUpdateModalVisible(false, values)}
-      afterClose={() => handleUpdateModalVisible()}
+      onCancel={() => handleUpdateModalVisible()}
     >
       <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
         <Step title="基本信息" />
