@@ -38,7 +38,7 @@ const LoginMessage: React.FC<{
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState, refresh, setInitialState } = useModel('@@initialState');
 
   const intl = useIntl();
 
@@ -63,6 +63,7 @@ const Login: React.FC = () => {
         });
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
+        await refresh();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
@@ -108,22 +109,27 @@ const Login: React.FC = () => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-          <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane
-              key="account"
-              tab={intl.formatMessage({
-                id: 'pages.login.accountLogin.tab',
-                defaultMessage: '账户密码登录',
-              })}
-            />
-            <Tabs.TabPane
-              key="mobile"
-              tab={intl.formatMessage({
-                id: 'pages.login.phoneLogin.tab',
-                defaultMessage: '手机号登录',
-              })}
-            />
-          </Tabs>
+          <Tabs
+            activeKey={type}
+            onChange={setType}
+            centered
+            items={[
+              {
+                key: 'account',
+                label: intl.formatMessage({
+                  id: 'pages.login.accountLogin.tab',
+                  defaultMessage: '账户密码登录',
+                }),
+              },
+              {
+                key: 'mobile',
+                label: intl.formatMessage({
+                  id: 'pages.login.phoneLogin.tab',
+                  defaultMessage: '手机号登录',
+                }),
+              },
+            ]}
+          />
 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage
